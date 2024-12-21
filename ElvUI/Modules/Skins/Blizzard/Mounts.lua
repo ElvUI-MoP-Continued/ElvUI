@@ -64,8 +64,13 @@ local function LoadSkin()
 	MountJournal.MountDisplay.NoMounts:ClearAllPoints()
 	MountJournal.MountDisplay.NoMounts:Point("CENTER",  MountJournal.bg)
 
-	MountJournal.MountDisplay.ModelFrame.RotateLeftButton:Kill()
-	MountJournal.MountDisplay.ModelFrame.RotateRightButton:Kill()
+	S:HandleRotateButton(MountJournal.MountDisplay.ModelFrame.RotateLeftButton)
+	MountJournal.MountDisplay.ModelFrame.RotateLeftButton:ClearAllPoints()
+	MountJournal.MountDisplay.ModelFrame.RotateLeftButton:Point("BOTTOM", MountJournal.MountDisplay.backdrop, -25, 22)
+
+	S:HandleRotateButton(MountJournal.MountDisplay.ModelFrame.RotateRightButton)
+	MountJournal.MountDisplay.ModelFrame.RotateRightButton:ClearAllPoints()
+	MountJournal.MountDisplay.ModelFrame.RotateRightButton:Point("BOTTOM", MountJournal.MountDisplay.backdrop, 25, 22)
 
 	S:HandleEditBox(MountJournalSearchBox)
 	MountJournalSearchBox:Width(E.PixelMode and 256 or 254)
