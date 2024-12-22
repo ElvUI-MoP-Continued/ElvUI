@@ -742,6 +742,8 @@ function B:RegisterUpdateDelayed()
 		if bagFrame.registerUpdate then
 			B:UpdateAllSlots(bagFrame)
 
+			E:StopSpinnerFrame(bagFrame.holderFrame)
+
 			bagFrame:RegisterEvent("BAG_UPDATE")
 			bagFrame:RegisterEvent("BAG_UPDATE_COOLDOWN")
 
