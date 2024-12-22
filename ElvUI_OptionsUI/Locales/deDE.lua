@@ -1546,3 +1546,7 @@ L["WHISPER"] = "Flüstern"
 L["WORLD_MAP"] = "Weltkarte"
 L["XPBAR_LABEL"] = "EP-Balken"
 L["YELL"] = "Schreien"
+
+-- Loot Roll Item Level Display
+L["Loot Roll Item Level"] = "Beute-Wurf-Gegenstandsstufe"
+L["Enable/Disable displaying of the item roll item level."] = "Aktiviert/Deaktiviert die Anzeige der Gegenstandsstufe beim Beutewurf."

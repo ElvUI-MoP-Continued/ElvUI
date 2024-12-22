@@ -1544,3 +1544,7 @@ L["WHISPER"] = "Шепот"
 L["WORLD_MAP"] = "Карта"
 L["XPBAR_LABEL"] = "Индикатор опыта"
 L["YELL"] = "Крик"
+
+-- Loot Roll Item Level Display
+L["Loot Roll Item Level"] = "Уровень предмета при броске добычи"
+L["Enable/Disable displaying of the item roll item level."] = "Включить/Отключить отображение уровня предмета при броске добычи."

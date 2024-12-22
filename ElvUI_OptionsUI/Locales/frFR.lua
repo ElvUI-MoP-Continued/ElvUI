@@ -1544,3 +1544,7 @@ L["WHISPER"] = "Chuchoter"
 L["WORLD_MAP"] = "Carte"
 L["XPBAR_LABEL"] = "Barre d'expérience"
 L["YELL"] = "Crier"
+
+-- Loot Roll Item Level Display
+L["Loot Roll Item Level"] = "Niveau d'objet du jet de butin"
+L["Enable/Disable displaying of the item roll item level."] = "Activer/Désactiver l'affichage du niveau d'objet lors du jet de butin."

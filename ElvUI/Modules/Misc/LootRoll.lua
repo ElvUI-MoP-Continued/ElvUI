@@ -117,21 +117,30 @@ end
 
 local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, ...)
 	local f = CreateFrame("Button", nil, parent)
+
 	f:Point(...)
 	f:Size(FRAME_HEIGHT - 4)
 	f:SetNormalTexture(ntex)
+
 	if ptex then f:SetPushedTexture(ptex) end
+
 	f:SetHighlightTexture(htex)
+
 	f.rolltype = rolltype
 	f.parent = parent
 	f.tiptext = tiptext
+
 	f:SetScript("OnEnter", SetTip)
 	f:SetScript("OnLeave", HideTip)
 	f:SetScript("OnClick", ClickRoll)
+
 	f:SetMotionScriptsWhileDisabled(true)
+
 	local txt = f:CreateFontString(nil, "ARTWORK")
+
 	txt:FontTemplate(nil, nil, "OUTLINE")
 	txt:Point("CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1 or 0)
+
 	return f, txt
 end
 
@@ -158,6 +167,12 @@ function M:CreateRollFrame()
 	button.icon = button:CreateTexture(nil, "OVERLAY")
 	button.icon:SetAllPoints()
 	button.icon:SetTexCoord(unpack(E.TexCoords))
+
+	if E.private.general.ilvlDisplay then
+		button.ilvl = button:CreateFontString(nil, 'OVERLAY')
+		button.ilvl:SetPoint('BOTTOM', button, 'BOTTOM', 0, 0)
+		button.ilvl:FontTemplate(nil, nil, 'OUTLINE')
+	end
 
 	local tfade = frame:CreateTexture(nil, "BORDER")
 	tfade:Point("TOPLEFT", frame, "TOPLEFT", 4, 0)
@@ -234,6 +249,11 @@ end
 function M:START_LOOT_ROLL(_, rollID, time)
 	if cancelled_rolls[rollID] then return end
 
+	local link = GetLootRollItemLink(rollID)
+	local texture, name, _, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollID)
+	local _, _, _, itemLevel, _, _, _, _, _, _, _, itemClassID, _, bindType = GetItemInfo(link)
+	local color = ITEM_QUALITY_COLORS[quality]
+
 	local f = GetFrame()
 	f.rollID = rollID
 	f.time = time
@@ -243,16 +263,21 @@ function M:START_LOOT_ROLL(_, rollID, time)
 	f.pass:SetText(0)
 	f.disenchant:SetText(0)
 
-	local texture, name, _, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollID)
 	f.button.icon:SetTexture(texture)
-	f.button.link = GetLootRollItemLink(rollID)
+	f.button.link = link
+
+	if E.private.general.ilvlDisplay then
+		f.button.ilvl:SetText(itemLevel)
+	end
 
 	if canNeed then f.needbutt:Enable() else f.needbutt:Disable() end
 	if canGreed then f.greedbutt:Enable() else f.greedbutt:Disable() end
 	if canDisenchant then f.disenchantbutt:Enable() else f.disenchantbutt:Disable() end
+
 	SetDesaturation(f.needbutt:GetNormalTexture(), not canNeed)
 	SetDesaturation(f.greedbutt:GetNormalTexture(), not canGreed)
 	SetDesaturation(f.disenchantbutt:GetNormalTexture(), not canDisenchant)
+
 	if canNeed then f.needbutt:SetAlpha(1) else f.needbutt:SetAlpha(0.2) end
 	if canGreed then f.greedbutt:SetAlpha(1) else f.greedbutt:SetAlpha(0.2) end
 	if canDisenchant then f.disenchantbutt:SetAlpha(1) else f.disenchantbutt:SetAlpha(0.2) end
@@ -260,7 +285,6 @@ function M:START_LOOT_ROLL(_, rollID, time)
 	f.fsbind:SetText(bop and L["BoP"] or L["BoE"])
 	f.fsbind:SetVertexColor(bop and 1 or 0.3, bop and 0.3 or 1, bop and 0.1 or 0.3)
 
-	local color = ITEM_QUALITY_COLORS[quality]
 	f.fsloot:SetText(name)
 	f.status:SetStatusBarColor(color.r, color.g, color.b, 0.7)
 	f.status.bg:SetTexture(color.r, color.g, color.b)
@@ -270,6 +294,7 @@ function M:START_LOOT_ROLL(_, rollID, time)
 
 	f:Point("CENTER", WorldFrame, "CENTER")
 	f:Show()
+
 	AlertFrame_FixAnchors()
 
 	-- Add cached roll info, if any
@@ -280,6 +305,7 @@ function M:START_LOOT_ROLL(_, rollID, time)
 				f.rolls[rollerName] = {rollType, class}
 				f[rolltypes[rollType]]:SetText(tonumber(f[rolltypes[rollType]]:GetText()) + 1)
 			end
+
 			completedRolls[rollID] = true
 			break
 		end

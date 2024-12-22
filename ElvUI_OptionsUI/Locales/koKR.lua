@@ -1595,3 +1595,7 @@ L["WHISPER"] = "귓속말"
 L["WORLD_MAP"] = "지도"
 L["XPBAR_LABEL"] = "경험치바"
 L["YELL"] = "외침"
+
+-- Loot Roll Item Level Display
+L["Loot Roll Item Level"] = "전리품 굴림 아이템 레벨"
+L["Enable/Disable displaying of the item roll item level."] = "아이템 굴림 아이템 레벨 표시를 활성화/비활성화합니다."

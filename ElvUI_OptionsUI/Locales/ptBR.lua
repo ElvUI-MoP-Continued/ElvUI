@@ -1544,3 +1544,7 @@ L["WHISPER"] = "Sussurrar"
 L["WORLD_MAP"] = "Mapa"
 L["XPBAR_LABEL"] = "Barra de EXP"
 L["YELL"] = "Gritar"
+
+-- Loot Roll Item Level Display
+L["Loot Roll Item Level"] = "Nível de item no saque"
+L["Enable/Disable displaying of the item roll item level."] = "Ativar/Desativar a exibição do nível de item na rolagem de saque."

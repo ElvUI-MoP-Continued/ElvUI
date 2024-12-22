@@ -1543,3 +1543,7 @@ L["WHISPER"] = "悄悄话"
 L["WORLD_MAP"] = "地图"
 L["XPBAR_LABEL"] = "经验槽"
 L["YELL"] = "大喊"
+
+-- Loot Roll Item Level Display
+L["Loot Roll Item Level"] = "战利品掷骰物品等级"
+L["Enable/Disable displaying of the item roll item level."] = "启用/禁用显示战利品掷骰的物品等级。"

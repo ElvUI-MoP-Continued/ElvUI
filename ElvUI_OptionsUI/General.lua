@@ -936,7 +936,16 @@ E.Options.args.general = {
 							get = function() return E.db.general.autoRoll end,
 							set = function(_, value) E.db.general.autoRoll = value end,
 							disabled = function() return not E.private.general.lootRoll end
-						}
+						},
+						ilvlDisplay = {
+							order = 4,
+							type = "toggle",
+							name = L["Loot Roll Item Level"],
+							desc = L["Enable/Disable displaying of the item roll item level."],
+							get = function() return E.private.general.ilvlDisplay end,
+							set = function(_, value) E.private.general.ilvlDisplay = value end,
+							disabled = function() return not E.private.general.lootRoll end
+						},
 					}
 				},
 				itemLevelInfo = {

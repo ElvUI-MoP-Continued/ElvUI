@@ -1543,3 +1543,7 @@ L["WHISPER"] = "Whisper"
 L["WORLD_MAP"] = "Map"
 L["XPBAR_LABEL"] = "XP Bar"
 L["YELL"] = "Yell"
+
+-- Loot Roll Item Level Display
+L["Loot Roll Item Level"] = true
+L["Enable/Disable displaying of the item roll item level."] = true
