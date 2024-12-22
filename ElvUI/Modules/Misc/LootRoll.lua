@@ -27,6 +27,7 @@ local GREED, NEED, PASS = GREED, NEED, PASS
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 local MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL
 local ROLL_DISENCHANT = ROLL_DISENCHANT
+local PRIEST_COLOR = RAID_CLASS_COLORS.PRIEST
 
 local cancelled_rolls = {}
 local cachedRolls = {}
@@ -47,18 +48,31 @@ local function HideTip2() GameTooltip:Hide() ResetCursor() end
 local rolltypes = {[1] = "need", [2] = "greed", [3] = "disenchant", [0] = "pass"}
 
 local function SetTip(frame)
+	local lineAdded
+
 	GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
 	GameTooltip:SetText(frame.tiptext)
+
 	if frame:IsEnabled() == 0 then
 		GameTooltip:AddLine("|cffff3333"..L["Can't Roll"])
 	end
 
-	for name, tbl in pairs(frame.parent.rolls) do
-		if rolltypes[tbl[1]] == rolltypes[frame.rolltype] then
-			local classColor = E:ClassColor(tbl[2])
-			GameTooltip:AddLine(name, classColor.r, classColor.g, classColor.b)
+	local rolls = frame.parent.rolls[frame.rolltype]
+
+	if rolls then
+		for _, infoTable in next, rolls do
+			local playerName, className = unpack(infoTable)
+			local classColor = E:ClassColor(className) or PRIEST_COLOR
+
+			if not lineAdded then
+				GameTooltip:AddLine(' ')
+				lineAdded = true
+			end
+
+			GameTooltip:AddLine(playerName, classColor.r, classColor.g, classColor.b)
 		end
 	end
+
 	GameTooltip:Show()
 end
 
@@ -116,7 +130,7 @@ local function StatusUpdate(frame)
 end
 
 local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, ...)
-	local f = CreateFrame("Button", nil, parent)
+	local f = CreateFrame('Button', format('$parent_%sButton', tiptext), parent)
 
 	f:Point(...)
 	f:Size(FRAME_HEIGHT - 4)
@@ -136,12 +150,16 @@ local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, ...
 
 	f:SetMotionScriptsWhileDisabled(true)
 
-	local txt = f:CreateFontString(nil, "ARTWORK")
+	-- local txt = f:CreateFontString(nil, "ARTWORK")
 
-	txt:FontTemplate(nil, nil, "OUTLINE")
-	txt:Point("CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1 or 0)
+	-- txt:FontTemplate(nil, nil, "OUTLINE")
+	-- txt:Point("CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1 or 0)
 
-	return f, txt
+	f.text = f:CreateFontString(nil, 'ARTWORK')
+	f.text:FontTemplate(nil, nil, 'OUTLINE')
+	f.text:SetPoint('BOTTOMRIGHT', 2, -2)
+
+	return f, f.text
 end
 
 function M:CreateRollFrame()
@@ -255,6 +273,9 @@ function M:START_LOOT_ROLL(_, rollID, time)
 	local color = ITEM_QUALITY_COLORS[quality]
 
 	local f = GetFrame()
+
+	wipe(f.rolls)
+
 	f.rollID = rollID
 	f.time = time
 	for i in pairs(f.rolls) do f.rolls[i] = nil end
@@ -302,7 +323,8 @@ function M:START_LOOT_ROLL(_, rollID, time)
 		if f.rollID == rollID then -- rollID matches cached rollid
 			for rollerName, rollerInfo in pairs(rollTable) do
 				local rollType, class = rollerInfo[1], rollerInfo[2]
-				f.rolls[rollerName] = {rollType, class}
+				if not f.rolls[rollType] then f.rolls[rollType] = {} end
+				tinsert(f.rolls[rollType], { rollerName, class })
 				f[rolltypes[rollType]]:SetText(tonumber(f[rolltypes[rollType]]:GetText()) + 1)
 			end
 
@@ -328,7 +350,9 @@ function M:LOOT_HISTORY_ROLL_CHANGED(_, itemIdx, playerIdx)
 	if name and rollType then
 		for _, f in ipairs(M.RollBars) do
 			if f.rollID == rollID then
-				f.rolls[name] = {rollType, class}
+				if not f.rolls[rollType] then f.rolls[rollType] = {} end
+				--f.rolls[name] = {rollType, class}
+				tinsert(f.rolls[rollType], { name, class })
 				f[rolltypes[rollType]]:SetText(tonumber(f[rolltypes[rollType]]:GetText()) + 1)
 				rollIsHidden = false
 				break
