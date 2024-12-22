@@ -176,8 +176,11 @@ do --this can save some main file locals
 --	local MrHankey		= E:TextureString(E.Media.ChatLogos.MrHankey, x)
 --	local Rainbow		= E:TextureString(E.Media.ChatLogos.Rainbow, x)
 	specialChatIcons = {
-		["[EN]".."Evermoon"] = {
-			["Insane"] = ElvOrange,
+		["sheilun"] = {
+			["Wazziku"] = ElvOrange,
+		},
+		["sheilun"] = {
+			["Lazziku"] = ElvPurple,
 		}
 	}
 end
@@ -692,8 +695,8 @@ function CH:PositionChat(override)
 	if not RightChatPanel or not LeftChatPanel then return end
 	if not CH.db.lockPositions or not E.private.chat.enable then return end
 
-	RightChatPanel:Size(CH.db.separateSizes and CH.db.panelWidthRight or CH.db.panelWidth, CH.db.separateSizes and CH.db.panelHeightRight or CH.db.panelHeight)
-	LeftChatPanel:Size(CH.db.panelWidth, CH.db.panelHeight)
+	RightChatPanel:SetSize(CH.db.separateSizes and CH.db.panelWidthRight or CH.db.panelWidth, CH.db.separateSizes and CH.db.panelHeightRight or CH.db.panelHeight)
+	LeftChatPanel:SetSize(CH.db.panelWidth, CH.db.panelHeight)
 
 	self.RightChatWindowID = FindRightChatID()
 
@@ -712,15 +715,15 @@ function CH:PositionChat(override)
 		if chat:IsShown() and not (id > NUM_CHAT_WINDOWS) and id == self.RightChatWindowID then
 			chat:ClearAllPoints()
 			if E.db.datatexts.rightChatPanel then
-				chat:Point("BOTTOMLEFT", RightChatDataPanel, "TOPLEFT", 1, 4)
+				chat:SetPoint("BOTTOMLEFT", RightChatDataPanel, "TOPLEFT", 1, 4)
 			else
 				BASE_OFFSET = BASE_OFFSET - 24
-				chat:Point("BOTTOMLEFT", RightChatDataPanel, "BOTTOMLEFT", 1, 2)
+				chat:SetPoint("BOTTOMLEFT", RightChatDataPanel, "BOTTOMLEFT", 1, 2)
 			end
 			if id ~= 2 then
-				chat:Size((CH.db.separateSizes and CH.db.panelWidthRight or CH.db.panelWidth) - 11, (CH.db.separateSizes and CH.db.panelHeightRight or CH.db.panelHeight) - BASE_OFFSET)
+				chat:SetSize((CH.db.separateSizes and CH.db.panelWidthRight or CH.db.panelWidth) - 11, (CH.db.separateSizes and CH.db.panelHeightRight or CH.db.panelHeight) - BASE_OFFSET)
 			else
-				chat:Size(CH.db.panelWidth - 11, (CH.db.panelHeight - BASE_OFFSET) - CombatLogQuickButtonFrame_Custom:GetHeight())
+				chat:SetSize(CH.db.panelWidth - 11, (CH.db.panelHeight - BASE_OFFSET) - CombatLogQuickButtonFrame_Custom:GetHeight())
 			end
 
 			--Pass a 2nd argument which prevents an infinite loop in our ON_FCF_SavePositionAndDimensions function
@@ -747,12 +750,13 @@ function CH:PositionChat(override)
 			if id ~= 2 and not (id > NUM_CHAT_WINDOWS) then
 				chat:ClearAllPoints()
 				if E.db.datatexts.leftChatPanel then
-					chat:Point("BOTTOMLEFT", LeftChatToggleButton, "TOPLEFT", 1, 4)
+					chat:SetPoint("BOTTOMLEFT", LeftChatToggleButton, "TOPLEFT", 1, 4)
 				else
 					BASE_OFFSET = BASE_OFFSET - 24
-					chat:Point("BOTTOMLEFT", LeftChatToggleButton, "BOTTOMLEFT", 1, 2)
+					chat:SetPoint("BOTTOMLEFT", LeftChatToggleButton, "BOTTOMLEFT", 1, 2)
 				end
-				chat:Size(CH.db.panelWidth - 11, (CH.db.panelHeight - BASE_OFFSET))
+
+				chat:SetSize(CH.db.panelWidth - 11, (CH.db.panelHeight - BASE_OFFSET))
 
 				--Pass a 2nd argument which prevents an infinite loop in our ON_FCF_SavePositionAndDimensions function
 				if chat:GetLeft() then

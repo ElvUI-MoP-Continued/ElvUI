@@ -26,6 +26,8 @@ local INVERTED_POINTS = {
 
 local t = 0
 local function UpdateCoords(self, elapsed)
+	if(not WorldMapFrame:IsShown()) then return end
+
 	t = t + elapsed
 	if t < 0.03333 then return end
 	t = 0
