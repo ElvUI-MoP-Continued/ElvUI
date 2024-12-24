@@ -11,6 +11,10 @@ local pairs = pairs
 local format = string.format
 local sort, tinsert, tconcat, strmatch = sort, tinsert, table.concat, strmatch
 
+local LibBase64 = E.Libs.Base64
+local LibCompress = LibStub:GetLibrary("LibCompress")
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+
 C.Values = {
 	FontFlags = {
 		NONE = L["NONE"],
@@ -461,6 +465,52 @@ local function ExportImport_Open(mode)
 		Box.editBox:SetFocus()
 		Box.editBox:SetScript("OnChar", nil)
 		Box.editBox:SetScript("OnTextChanged", OnTextChanged)
+	elseif mode == "convert" then
+		Frame:SetTitle(L["Convert Retail Import Profile"])
+
+		local convertButton = E.Libs.AceGUI:Create("Button-ElvUI")
+
+		convertButton:SetText(L["Convert Now"])
+		convertButton:SetAutoWidth(true)
+		convertButton:SetCallback("OnClick", function()
+			Label1:SetText(" ")
+			Label2:SetText(" ")
+
+			local newProfileData = Box:GetText()
+
+			if LibBase64:IsBase64(newProfileData) then
+				Label1:SetText("This profile seems to have an invalid encoding type!")
+				return
+			end
+
+			if not strfind(newProfileData, '!E1!') then
+				Label1:SetText("The provided profile string seems to be invalid!")
+				return
+			end
+
+			local newProfileFormattedData = gsub(newProfileData, '^'..'!E1!', '')
+			local newProfileDecodedData = LibDeflate:DecodeForPrint(newProfileFormattedData)
+			local newProfileDecompressedData = LibDeflate:DecompressDeflate(newProfileDecodedData)
+		
+			if not newProfileDecompressedData then
+				Label1:SetText(format("Error converting profile! (%s)"))
+				return
+			end
+		
+			local oldProfileCompressedData = LibCompress:Compress(newProfileDecompressedData)
+			local oldProfileData = LibBase64:Encode(oldProfileCompressedData)
+
+			Box:SetText(oldProfileData)
+			Box.editBox:HighlightText()
+			Box:SetFocus()
+
+			exportString = oldProfileData
+
+			Label1:SetText("Successfully Converted!")
+			Label2:SetText("Use CTRL+C to copy the converted profile and then head to the import profile page.")
+		end)
+
+		Frame:AddChild(convertButton)
 	end
 
 	Frame:SetCallback("OnClose", function(widget)
@@ -569,5 +619,18 @@ E.Options.args.profiles.plugins.ElvUI = {
 		func = function()
 			ExportImport_Open("import")
 		end
-	}
+	},
+	spacer3 = {
+		order = 96,
+		type = "description",
+		name = ""
+	},
+	convertRetailProfile = {
+		order = 97,
+		type = "execute",
+		name = "Convert Retail Profile",
+		func = function()
+			ExportImport_Open("convert")
+		end
+	},
 }
