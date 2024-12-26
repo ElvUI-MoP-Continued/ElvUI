@@ -254,6 +254,7 @@ function NP:StyleFilterSetChanges(frame, actions, HealthColorChanged, BorderChan
 			frame.Level:ClearAllPoints()
 			frame.Level:SetPoint("LEFT", frame.Name, "RIGHT")
 			frame.Level:SetJustifyH("LEFT")
+			frame.Level:SetParent(frame)
 			frame.Level:SetFormattedText(" [%s]", NP:UnitLevel(frame))
 		end
 		if not NameColorChanged then

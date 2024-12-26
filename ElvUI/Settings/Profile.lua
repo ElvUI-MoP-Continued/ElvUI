@@ -424,6 +424,10 @@ P.nameplates = {
 			},
 			level = {
 				enable = false,
+				position = "TOPRIGHT",
+				parent = "Health",
+				xOffset = 0,
+				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
@@ -563,6 +567,10 @@ P.nameplates = {
 			},
 			level = {
 				enable = true,
+				position = "TOPRIGHT",
+				parent = "Health",
+				xOffset = 0,
+				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
@@ -705,6 +713,10 @@ P.nameplates = {
 			},
 			level = {
 				enable = false,
+				position = "TOPRIGHT",
+				parent = "Health",
+				xOffset = 0,
+				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
@@ -848,6 +860,10 @@ P.nameplates = {
 			},
 			level = {
 				enable = true,
+				position = "TOPRIGHT",
+				parent = "Health",
+				xOffset = 0,
+				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11

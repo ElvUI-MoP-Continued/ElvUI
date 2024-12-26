@@ -3307,8 +3307,45 @@ local function GetUnitSettings(unit, name)
 						type = "description",
 						name = " "
 					},
-					font = {
+					position = {
 						order = 3,
+						type = "select",
+						name = L["Position"],
+						values = {
+							["CENTER"] = "CENTER",
+							["TOPLEFT"] = "TOPLEFT",
+							["BOTTOMLEFT"] = "BOTTOMLEFT",
+							["TOPRIGHT"] = "TOPRIGHT",
+							["BOTTOMRIGHT"] = "BOTTOMRIGHT"
+						}
+					},
+					parent = {
+						order = 4,
+						type = "select",
+						name = L["Parent"],
+						values = {
+							["Nameplate"] = L["Nameplate"],
+							["Health"] = L["Health"]
+						}
+					},
+					xOffset = {
+						order = 5,
+						name = L["X-Offset"],
+						type = "range",
+						min = -100,
+						max = 100,
+						step = 1
+					},
+					yOffset = {
+						order = 6,
+						name = L["Y-Offset"],
+						type = "range",
+						min = -100,
+						max = 100,
+						step = 1
+					},
+					font = {
+						order = 7,
 						type = "select",
 						name = L["Font"],
 						dialogControl = "LSM30_Font",
@@ -3316,14 +3353,14 @@ local function GetUnitSettings(unit, name)
 						disabled = function() return not E.db.nameplates.units[unit].level.enable end
 					},
 					fontSize = {
-						order = 4,
+						order = 8,
 						type = "range",
 						name = L["FONT_SIZE"],
 						min = 4, max = 32, step = 1,
 						disabled = function() return not E.db.nameplates.units[unit].level.enable end
 					},
 					fontOutline = {
-						order = 5,
+						order = 9,
 						type = "select",
 						name = L["Font Outline"],
 						desc = L["Set the font outline."],
