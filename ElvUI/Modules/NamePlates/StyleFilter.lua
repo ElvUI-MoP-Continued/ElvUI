@@ -249,6 +249,7 @@ function NP:StyleFilterSetChanges(frame, actions, HealthColorChanged, BorderChan
 		frame.Name:ClearAllPoints()
 		frame.Name:SetJustifyH("CENTER")
 		frame.Name:SetPoint("TOP", frame)
+		frame.Name:SetParent(frame)
 		if NP.db.units[frame.UnitType].level.enable then
 			frame.Level:ClearAllPoints()
 			frame.Level:SetPoint("LEFT", frame.Name, "RIGHT")
