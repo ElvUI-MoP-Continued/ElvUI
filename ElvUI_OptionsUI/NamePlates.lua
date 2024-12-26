@@ -3431,7 +3431,6 @@ local function GetUnitSettings(unit, name)
 			}
 		}
 	}
-
 	if unit == "FRIENDLY_PLAYER" or unit == "ENEMY_PLAYER" then
 		group.args.pvpRole = {
 			order = 7,
@@ -3463,7 +3462,7 @@ local function GetUnitSettings(unit, name)
 		}
 		if unit == "ENEMY_PLAYER" then
 			group.args.comboPoints = {
-				order = 8,
+				order = 9,
 				type = "group",
 				name = L["COMBO_POINTS"],
 				get = function(info) return E.db.nameplates.units.ENEMY_PLAYER.comboPoints[info[#info]] end,
@@ -3519,6 +3518,43 @@ local function GetUnitSettings(unit, name)
 						name = L["Y-Offset"],
 						min = -100, max = 100, step = 1,
 						disabled = function() return not E.db.nameplates.units.ENEMY_PLAYER.comboPoints.enable end
+					}
+				}
+			}
+		end
+		if unit == "FRIENDLY_PLAYER" then
+			group.args.raidRole = {
+				order = 8,
+				type = "group",
+				name = "Raid Role",
+				get = function(info) return E.db.nameplates.units[unit].raidRole[info[#info]] end,
+				set = function(info, value) E.db.nameplates.units[unit].raidRole[info[#info]] = value NP:PLAYER_ENTERING_WORLD() NP:ConfigureAll() end,
+				args = {
+					enable = {
+						order = 1,
+						type = "toggle",
+						name = L["ENABLE"]
+					},
+					size = {
+						order = 4,
+						type = "range",
+						name = L["Size"],
+						min = 5, max = 60, step = 1,
+						disabled = function() return not E.db.nameplates.units[unit].raidRole.enable end
+					},
+					markHealers = {
+						order = 2,
+						type = "toggle",
+						name = L["Healer Icon"],
+						desc = L["Display a healer icon over known healers."],
+						disabled = function() return not E.db.nameplates.units[unit].raidRole.enable end
+					},
+					markTanks = {
+						order = 3,
+						type = "toggle",
+						name = L["Tank Icon"],
+						desc = L["Display a tank icon over known tanks."],
+						disabled = function() return not E.db.nameplates.units[unit].raidRole.enable end
 					}
 				}
 			}

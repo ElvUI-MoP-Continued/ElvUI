@@ -22,6 +22,8 @@ local UnitExists = UnitExists
 local UnitGUID = UnitGUID
 local UnitIsPlayer = UnitIsPlayer
 local UnitName = UnitName
+local GetNumGroupMembers = GetNumGroupMembers
+local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local UnitInParty = UnitInParty
 local UnitInRaid = UnitInRaid
 local WorldFrame = WorldFrame
@@ -144,6 +146,38 @@ function NP:CheckArenaHealers()
 			end
 		end
 	end
+end
+
+function NP:CheckGroupHealers()
+    local groupSize = GetNumGroupMembers()
+    local isRaid = IsInRaid()
+
+    for i = 1, groupSize do
+        local unit = (isRaid and "raid"..i) or (i == 1 and "player") or "party"..(i - 1)
+
+        if UnitExists(unit) then
+            local name, realm = UnitName(unit)
+
+            if name then
+                realm = (realm and realm ~= "") and gsub(realm, "[%s%-]", "")
+                if realm then name = name.."-"..realm end
+
+                local role = UnitGroupRolesAssigned(unit)
+
+                if role == "HEALER" then
+                    self.Healers[name] = role
+                elseif self.Healers[name] then
+                    self.Healers[name] = nil
+                end
+
+                if role == "TANK" then
+                    self.Tanks[name] = role
+                elseif self.Tanks[name] then
+                    self.Tanks[name] = nil
+                end
+            end
+        end
+    end
 end
 
 function NP:SetFrameScale(frame, scale, noPlayAnimation)
@@ -596,6 +630,7 @@ function NP:UpdateElement_All(frame, noTargetFrame, filterIgnore)
 
 	self:Update_RaidIcon(frame)
 	self:Update_PvPRole(frame)
+	self:Update_RaidRole(frame)
 	self:Update_Level(frame)
 	self:Update_Name(frame)
 
@@ -674,6 +709,7 @@ function NP:OnCreated(frame)
 	unitFrame.Buffs = self:Construct_Auras(unitFrame, "Buffs")
 	unitFrame.Debuffs = self:Construct_Auras(unitFrame, "Debuffs")
 	unitFrame.PvPRole = self:Construct_PvPRole(unitFrame)
+	unitFrame.RaidRole = self:Construct_RaidRole(unitFrame)
 	unitFrame.CPoints = self:Construct_CPoints(unitFrame)
 	unitFrame.IconFrame = self:Construct_IconFrame(unitFrame)
 	self:Construct_Glow(unitFrame)
@@ -1006,16 +1042,24 @@ function NP:PLAYER_ENTERING_WORLD()
 	hasTarget = UnitExists("target") == 1
 
 	local inInstance, instanceType = IsInInstance()
-	local showIcon = self.db.units.ENEMY_PLAYER.pvpRole.enable or self.db.units.FRIENDLY_PLAYER.pvpRole.enable
+	local showPvPIcon = self.db.units.ENEMY_PLAYER.pvpRole.enable or self.db.units.FRIENDLY_PLAYER.pvpRole.enable
+	local showRaidIcon = self.db.units.FRIENDLY_PLAYER.raidRole.enable
 
-	if inInstance and (instanceType == "pvp") and showIcon then
+	if inInstance and (instanceType == "pvp") and showPvPIcon then
 		self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE", "CheckBGHealers")
 		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 3)
-	elseif inInstance and (instanceType == "arena") and showIcon then
+	elseif inInstance and (instanceType == "arena") and showPvPIcon then
 		self:RegisterEvent("UNIT_NAME_UPDATE", "CheckArenaHealers")
 		self:RegisterEvent("ARENA_OPPONENT_UPDATE", "CheckArenaHealers")
 		self:CheckArenaHealers()
+	elseif inInstance and (instanceType == "raid" or instanceType == "scenario" or instanceType == "party") and showPvPIcon then
+		self:RegisterEvent("GROUP_ROSTER_UPDATE", "CheckGroupHealers")
+
+		self:CheckGroupHealers()
+
+		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 3)
 	else
+		self:UnregisterEvent("GROUP_ROSTER_UPDATE")
 		self:UnregisterEvent("UNIT_NAME_UPDATE")
 		self:UnregisterEvent("ARENA_OPPONENT_UPDATE")
 		self:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE")

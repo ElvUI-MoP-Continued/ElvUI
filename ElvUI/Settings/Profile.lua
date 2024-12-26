@@ -518,6 +518,12 @@ P.nameplates = {
 			pvpRole = {
 				enable = false,
 				showHealer = false,
+				showTank = false,
+				size = 35
+			},
+			raidRole = {
+				enable = false,
+				showHealer = false,
 				showTank = false
 			}
 		},
