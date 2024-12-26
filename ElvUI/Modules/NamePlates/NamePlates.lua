@@ -1057,7 +1057,7 @@ function NP:PLAYER_ENTERING_WORLD()
 
 		self:CheckGroupHealers()
 
-		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 3)
+		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckGroupHealers", 3)
 	else
 		self:UnregisterEvent("GROUP_ROSTER_UPDATE")
 		self:UnregisterEvent("UNIT_NAME_UPDATE")
