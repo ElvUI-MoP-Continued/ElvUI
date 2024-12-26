@@ -532,7 +532,8 @@ P.nameplates = {
 			raidRole = {
 				enable = false,
 				showHealer = false,
-				showTank = false
+				showTank = false,
+				size = 35
 			}
 		},
 		ENEMY_PLAYER = {
